@@ -15,9 +15,9 @@ variable clan_group_email {
 }
 
 variable clan_slack_channel {
-  type        = string
-  description = "The slack channel for alerts"
-  default     = ""
+  type        = list
+  description = "The slack channels for alerts"
+  default     = []
 }
 
 variable project_id_slack_token {

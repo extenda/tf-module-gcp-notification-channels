@@ -14,11 +14,10 @@ resource "google_monitoring_notification_channel" "clan_email" {
 }
 
 resource "google_monitoring_notification_channel" "clan_slack_channel" {
-  for_each = var.clan_slack_channel
+  for_each = toset(var.clan_slack_channel)
   
-  count        = each.value != "" ? 1 : 0
   project      = var.tribe_project_id
-  display_name = "Notification Slack channel for ${var.clan_name} clan"
+  display_name = "Notification Slack channel for ${var.clan_name} clan each.value"
   type         = "slack"
   labels = {
     channel_name = each.value
