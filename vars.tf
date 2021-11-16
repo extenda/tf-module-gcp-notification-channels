@@ -15,7 +15,9 @@ variable clan_group_email {
 }
 
 variable clan_slack_channels {
-  type        = list
+  type = list(object({
+    name   = string
+  }))
   description = "The slack channels for alerts"
   default     = []
 }
