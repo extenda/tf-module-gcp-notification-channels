@@ -14,10 +14,12 @@ variable clan_group_email {
   default     = ""
 }
 
-variable clan_slack_channel {
-  type        = string
-  description = "The slack channel for alerts"
-  default     = ""
+variable clan_slack_channels {
+  type = list(object({
+    name   = string
+  }))
+  description = "The slack channels for alerts"
+  default     = []
 }
 
 variable project_id_slack_token {

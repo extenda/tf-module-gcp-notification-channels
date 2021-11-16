@@ -1,4 +1,8 @@
-output notification_channels {
+output notification_channel_name {
   description = "The list of notification channels"
-  value       = flatten([google_monitoring_notification_channel.clan_email.*.id, google_monitoring_notification_channel.clan_slack_channel.*.id])
+  value       = [
+    for name, channel in google_monitoring_notification_channel.clan_slack_channels :
+    channel.name
+  ]
+  sensitive   = true
 }
