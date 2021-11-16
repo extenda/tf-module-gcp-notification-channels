@@ -13,7 +13,7 @@ resource "google_monitoring_notification_channel" "clan_email" {
   }
 }
 
-resource "google_monitoring_notification_channel" "clan_slack_channel" {
+resource "google_monitoring_notification_channel" "clan_slack_channels" {
   for_each = toset(var.clan_slack_channels)
   
   project      = var.tribe_project_id
