@@ -14,4 +14,4 @@
 
 | Name | Description |
 |------|-------------|
-| notification\_channel\_name | The list of notification channels |
+| notification\_channels | The list of notification channels |
