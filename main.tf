@@ -1,6 +1,12 @@
+data "google_secret_manager_secret_version" "slack_token" {
+  count   = var.slack_token_secret_project_id != "" ? 1 : 0
+  project = var.slack_token_secret_project_id
+  secret  = var.slack_token_secret_name
+}
 
 resource "google_monitoring_notification_channel" "slack" {
-  for_each     = { for nc in try(var.notification_channels.slack, {}) : nc.channel_name => nc }
+  for_each = { for nc in try(var.notification_channels.slack, {}) : nc.channel_name => nc }
+
   type         = "slack"
   project      = var.project
   display_name = try(each.value.display_name, each.value.channel_name)
@@ -13,12 +19,12 @@ resource "google_monitoring_notification_channel" "slack" {
   }
 
   sensitive_labels {
-    auth_token = each.value.auth_token
+    auth_token = try(each.value.auth_token, data.google_secret_manager_secret_version.slack_token[0].secret_data)
   }
 }
 
 resource "google_monitoring_notification_channel" "email" {
-  for_each = { for nc in try(var.notification_channels.email , {}) : nc.email_address => nc }
+  for_each     = { for nc in try(var.notification_channels.email, {}) : nc.email_address => nc }
   type         = "email"
   project      = var.project
   display_name = try(each.value.display_name, each.value.email_address)
@@ -32,7 +38,7 @@ resource "google_monitoring_notification_channel" "email" {
 }
 
 resource "google_monitoring_notification_channel" "sms" {
-  for_each = { for nc in try(var.notification_channels.sms , {}) : nc.number => nc }
+  for_each     = { for nc in try(var.notification_channels.sms, {}) : nc.number => nc }
   type         = "sms"
   project      = var.project
   display_name = try(each.value.display_name, each.value.number)
@@ -46,7 +52,7 @@ resource "google_monitoring_notification_channel" "sms" {
 }
 
 resource "google_monitoring_notification_channel" "pubsub" {
-  for_each = { for nc in try(var.notification_channels.pubsub , {}) : nc.topic => nc }
+  for_each     = { for nc in try(var.notification_channels.pubsub, {}) : nc.topic => nc }
   type         = "pubsub"
   project      = var.project
   display_name = try(each.value.display_name, each.value.topic)
@@ -89,7 +95,7 @@ resource "google_monitoring_notification_channel" "webhook_basicauth" {
   force_delete = try(each.value.force_delete, false)
 
   labels = {
-    url = each.value.url
+    url      = each.value.url
     username = each.value.username
   }
 
