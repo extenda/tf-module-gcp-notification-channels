@@ -1,0 +1,23 @@
+# Supported types: ["webhook", "slack", "email", "sms", "pubsub"]
+
+webhook:
+- display_name: Webhook
+  url: https://example.com/api/v1/webhook/hiimatoken123
+- display_name: Webhook with basic auth
+  url: https://example.com/api/v1/webhook/
+  username: pelle_svanslos
+  password: majaGräddnos123
+
+slack:
+- channel_name: "#foobar"
+  auth_token: supersecrettoken
+
+email:
+- email_address: pelle.svanslos@example.com
+
+sms:
+- display_name: Pelle Svanslös
+  number: "+46701234567"
+
+pubsub:
+- topic: projects/[PROJECT_ID]/topics/[TOPIC]

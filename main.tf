@@ -1,31 +1,99 @@
-data "google_secret_manager_secret_version" "monitoring_slack_token" {
-  project = var.project_id_slack_token
-  secret  = "monitoring-slack-token"
-}
 
-resource "google_monitoring_notification_channel" "clan_email" {
-  count        = var.clan_group_email != "" ? 1 : 0
-  project      = var.tribe_project_id
-  display_name = "Email channel for ${var.clan_name} clan"
-  type         = "email"
-  labels = {
-    email_address = var.clan_group_email
-  }
-}
-
-resource "google_monitoring_notification_channel" "clan_slack_channels" {
-  for_each = {
-    for channel in var.clan_slack_channels :
-    channel.name => channel
-  }
-  
-  project      = var.tribe_project_id
-  display_name = "Slack channel for ${var.clan_name} clan: ${each.value.name}"
+resource "google_monitoring_notification_channel" "slack" {
+  for_each     = { for nc in try(var.notification_channels.slack, {}) : nc.channel_name => nc }
   type         = "slack"
+  project      = var.project
+  display_name = try(each.value.display_name, each.value.channel_name)
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
   labels = {
-    channel_name = each.value.name
+    channel_name = each.value.channel_name
   }
+
   sensitive_labels {
-    auth_token = data.google_secret_manager_secret_version.monitoring_slack_token.secret_data
+    auth_token = each.value.auth_token
+  }
+}
+
+resource "google_monitoring_notification_channel" "email" {
+  for_each = { for nc in try(var.notification_channels.email , {}) : nc.email_address => nc }
+  type         = "email"
+  project      = var.project
+  display_name = try(each.value.display_name, each.value.email_address)
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
+  labels = {
+    email_address = each.value.email_address
+  }
+}
+
+resource "google_monitoring_notification_channel" "sms" {
+  for_each = { for nc in try(var.notification_channels.sms , {}) : nc.number => nc }
+  type         = "sms"
+  project      = var.project
+  display_name = try(each.value.display_name, each.value.number)
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
+  labels = {
+    number = each.value.number
+  }
+}
+
+resource "google_monitoring_notification_channel" "pubsub" {
+  for_each = { for nc in try(var.notification_channels.pubsub , {}) : nc.topic => nc }
+  type         = "pubsub"
+  project      = var.project
+  display_name = try(each.value.display_name, each.value.topic)
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
+  labels = {
+    topic = each.value.topic
+  }
+}
+
+resource "google_monitoring_notification_channel" "webhook_tokenauth" {
+  for_each = {
+    for nc in try(var.notification_channels.webhook, {}) : nc.url => nc
+    if lookup(nc, "password", null) == null
+  }
+  type         = "webhook_tokenauth"
+  project      = var.project
+  display_name = each.value.display_name
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
+  labels = {
+    url = each.value.url
+  }
+}
+
+resource "google_monitoring_notification_channel" "webhook_basicauth" {
+  for_each = {
+    for nc in try(var.notification_channels.webhook, {}) : nc.url => nc
+    if lookup(nc, "password", null) != null
+  }
+  type         = "webhook_basicauth"
+  project      = var.project
+  display_name = each.value.display_name
+  enabled      = try(each.value.enabled, true)
+  description  = try(each.value.description, null)
+  force_delete = try(each.value.force_delete, false)
+
+  labels = {
+    url = each.value.url
+    username = each.value.username
+  }
+
+  sensitive_labels {
+    password = each.value.password
   }
 }
