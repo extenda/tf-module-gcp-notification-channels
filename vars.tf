@@ -8,6 +8,12 @@ variable "notification_channels" {
   description = "List of the actual notification channel configs"
 }
 
+variable default_user_labels {
+  type        = map(any)
+  description = "User labels to be set for all alerts"
+  default     = {}
+}
+
 variable "slack_token_secret_project_id" {
   type        = string
   description = "Id of the project holding the secret"

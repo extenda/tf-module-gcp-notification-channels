@@ -1,5 +1,5 @@
 data "google_secret_manager_secret_version" "slack_token" {
-  count   = var.slack_token_secret_project_id != "" ? 1 : 0
+  count   = var.slack_token_secret_project_id != "" && length(try(var.notification_channels.slack, [])) >= 1 ? 1 : 0
   project = var.slack_token_secret_project_id
   secret  = var.slack_token_secret_name
 }
@@ -12,6 +12,7 @@ resource "google_monitoring_notification_channel" "slack" {
   display_name = try(each.value.display_name, each.value.channel_name)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -30,6 +31,7 @@ resource "google_monitoring_notification_channel" "email" {
   display_name = try(each.value.display_name, each.value.email_address)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -44,6 +46,7 @@ resource "google_monitoring_notification_channel" "sms" {
   display_name = try(each.value.display_name, each.value.number)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -58,6 +61,7 @@ resource "google_monitoring_notification_channel" "pubsub" {
   display_name = try(each.value.display_name, each.value.topic)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -75,6 +79,7 @@ resource "google_monitoring_notification_channel" "webhook_tokenauth" {
   display_name = each.value.display_name
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -92,6 +97,7 @@ resource "google_monitoring_notification_channel" "webhook_basicauth" {
   display_name = each.value.display_name
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
+  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
 
   labels = {

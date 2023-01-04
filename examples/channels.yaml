@@ -11,11 +11,13 @@ webhook:
 slack:
 - channel_name: "#foobar"
   auth_token: supersecrettoken
-- channel_name: "#auth-token-provided-via-gcp-secret" 
+# - channel_name: "#auth-token-provided-via-gcp-secret" 
 # auth_token can be provided through GCP stored secret. Todo this, set variables pointing to its location.
 
 email:
 - email_address: pelle.svanslos@example.com
+  user_labels: # Add custom labels to this NC
+    clan: de_svanslosa
 
 sms:
 - display_name: Pelle Svanslös
