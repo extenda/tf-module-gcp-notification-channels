@@ -6,7 +6,6 @@ data "google_secret_manager_secret_version" "slack_token" {
 
 resource "google_monitoring_notification_channel" "slack" {
   for_each = { for nc in try(var.notification_channels.slack, {}) : nc.channel_name => nc }
-
   type         = "slack"
   project      = var.project
   display_name = try(each.value.display_name, each.value.channel_name)
