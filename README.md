@@ -12,7 +12,8 @@
 ## notification_channels
 
 This variable variable holds a list of configs for the notification channels, and should be structured as shown below. \
-[Terraform - Uptime checks](https://registry.terraform.io/providers/hashicorp/google/4.47.0/docs/resources/monitoring_uptime_check_config)
+📖 [Terraform Docs](https://registry.terraform.io/providers/hashicorp/google/4.47.0/docs/resources/monitoring_uptime_check_config) \
+✅ [Examples](https://registry.terraform.io/providers/hashicorp/google/4.47.0/docs/resources/monitoring_uptime_check_config)
 
 ```hcl
 notification_channels = list({
