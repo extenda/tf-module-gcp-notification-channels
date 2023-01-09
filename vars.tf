@@ -8,7 +8,7 @@ variable "notification_channels" {
   description = "List of the actual notification channel configs"
 }
 
-variable default_user_labels {
+variable "default_user_labels" {
   type        = map(any)
   description = "User labels to be set for all alerts"
   default     = {}
