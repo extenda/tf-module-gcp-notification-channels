@@ -1,29 +1,27 @@
-variable tribe_project_id {
+variable "project" {
   type        = string
-  description = "Project ID where the Monitoring resources will be created"
+  description = "Project ID to create the notification channels in"
 }
 
-variable clan_name {
-  type        = string
-  description = "The name of the clan"
+variable "notification_channels" {
+  type        = any
+  description = "List of the actual notification channel configs"
 }
 
-variable clan_group_email {
+variable "default_user_labels" {
+  type        = map(any)
+  description = "User labels to be set for all alerts"
+  default     = {}
+}
+
+variable "slack_token_secret_project_id" {
   type        = string
-  description = "GSuite email of the clan group"
+  description = "Id of the project holding the secret"
   default     = ""
 }
 
-variable clan_slack_channels {
-  type = list(object({
-    name   = string
-  }))
-  description = "The slack channels for alerts"
-  default     = []
-}
-
-variable project_id_slack_token {
+variable "slack_token_secret_name" {
   type        = string
-  description = "Project ID where an authorization token for a notification channel is stored"
+  description = "Name of the actual secret that's holding the slack token"
   default     = ""
 }
