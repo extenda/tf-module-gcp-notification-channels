@@ -25,3 +25,4 @@ sms:
 
 pubsub:
 - topic: projects/[PROJECT_ID]/topics/[TOPIC]
+  fallback_channel: true # The id of this channel will be included in the "fallback_channels_ids" output.
