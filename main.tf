@@ -11,7 +11,12 @@ resource "google_monitoring_notification_channel" "slack" {
   display_name = try(each.value.display_name, each.value.channel_name)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
+
   force_delete = try(each.value.force_delete, false)
 
   labels = {
@@ -30,8 +35,12 @@ resource "google_monitoring_notification_channel" "email" {
   display_name = try(each.value.display_name, each.value.email_address)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
 
   labels = {
     email_address = each.value.email_address
@@ -45,8 +54,12 @@ resource "google_monitoring_notification_channel" "sms" {
   display_name = try(each.value.display_name, each.value.number)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
 
   labels = {
     number = each.value.number
@@ -60,8 +73,12 @@ resource "google_monitoring_notification_channel" "pubsub" {
   display_name = try(each.value.display_name, each.value.topic)
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
 
   labels = {
     topic = each.value.topic
@@ -78,8 +95,12 @@ resource "google_monitoring_notification_channel" "webhook_tokenauth" {
   display_name = each.value.display_name
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
 
   labels = {
     url = each.value.url
@@ -96,8 +117,12 @@ resource "google_monitoring_notification_channel" "webhook_basicauth" {
   display_name = each.value.display_name
   enabled      = try(each.value.enabled, true)
   description  = try(each.value.description, null)
-  user_labels  = merge(var.default_user_labels, try(each.value.user_labels, {}))
   force_delete = try(each.value.force_delete, false)
+  user_labels  = merge(
+    var.default_user_labels,
+    try(each.value.user_labels, {}),
+    try(each.value.fallback_channel, false) ? { "fallback_channel": true } : {}
+  )
 
   labels = {
     url      = each.value.url
