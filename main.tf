@@ -4,7 +4,7 @@ data "google_secret_manager_secret_version" "slack_token" {
   secret  = var.slack_token_secret_name
 }
 
-resource "google_monitoring_notification_channel" "slack" {
+resource "google_monitoring_notification_channel" "clan_slack_channels" {
   for_each     = { for nc in try(var.notification_channels.slack, {}) : nc.channel_name => nc }
   type         = "slack"
   project      = var.project
@@ -28,7 +28,7 @@ resource "google_monitoring_notification_channel" "slack" {
   }
 }
 
-resource "google_monitoring_notification_channel" "email" {
+resource "google_monitoring_notification_channel" "clan_email" {
   for_each     = { for nc in try(var.notification_channels.email, {}) : nc.email_address => nc }
   type         = "email"
   project      = var.project
