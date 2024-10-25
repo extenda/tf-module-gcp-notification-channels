@@ -25,3 +25,9 @@ output "fallback_channels_ids" {
 
   description = "Ids of fallback_channels"
 }
+
+# Can be used as dependency input
+output "notification_channels_email_ids" {
+  value       = [for nc in google_monitoring_notification_channel.email : nc.id ]
+  description = "Ids of email notifiaction channels"
+}
